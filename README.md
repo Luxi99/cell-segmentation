@@ -2,20 +2,21 @@
 
 ### Prerequisiti
 - Git
-- Miniconda o Anaconda
+- Python 3.12.3 o Miniconda/Anaconda
 
-### Installazione
+## Installazione
 ```bash
 git clone <url-repo>
+cd cell-segmentation
 ```
 
-## Opzione A — Conda (consigliata, compatibile con Cellpose)
+### Opzione A — Conda (compatibile con Cellpose)
 ```bash
 conda env create -f environment.yml
 conda activate cell-segmentation
 ```
 
-## Opzione B — venv + pip
+### Opzione B — venv + pip
 ```bash
 python -m venv .venv
 source .venv/bin/activate      # Linux/Mac
