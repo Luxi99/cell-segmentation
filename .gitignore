@@ -10,6 +10,44 @@ Data/input/
 *.jpg
 
 # Output generati (riproducibili dagli script)
+data/output/
+
+# Ambiente conda (riproducibile da environment.yml)
+.venv/
+envs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.ipynb_checkpoints/
+
+# Zip nella root directory
+*.zip
+
+# Modelli
+models/
+
+# Progetti QuPath
+Progetti QuPath/
+
+# Sistema
+.DS_Store
+*.swp
+
+# Eseguibile QuPath
+QuPath/
+
+# Immagini (troppo grandi per Git)
+Data/input/
+*.czi
+*.tif
+*.tiff
+*.png
+*.jpg
+
+# Output generati (riproducibili dagli script)
 Data/output/
 
 # Ambiente conda (riproducibile da environment.yml)
