@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Setup
 
 ### Prerequisiti
@@ -71,3 +72,6 @@ which python
 Quindi uscire dall'ambiente virtuale SAM con `conda deactivate`.
 
 **N.B.:** Questo metodo di installazione di Cellpose funziona solo con versioni di QuPath a partire dalla 0.6.0. Per versioni meno recenti riferirsi a [questo](https://github.com/BIOP/qupath-extension-cellpose?tab=readme-ov-file#on-qupath-05x) link, tuttavia al momento non è garantita compatibilità. Inoltre le operazioni precedenti si intendono effettuate sempre all'interno dell'ambiente virtuale attivato in precedenza.
+=======
+# tirocinio-longo
+>>>>>>> 0ed8f3b (Initial commit)
