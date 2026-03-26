@@ -26,11 +26,10 @@ __pycache__/
 # Zip nella root directory
 *.zip
 
-# Modelli
+# Cartelle nella root non necessarie.
 models/
-
-# Progetti QuPath
 Progetti QuPath/
+Papers e materiale/
 
 # Sistema
 .DS_Store
