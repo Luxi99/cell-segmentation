@@ -30,7 +30,6 @@ __pycache__/
 models/
 Progetti QuPath/
 Papers e materiale/
-qupath-gradle-scripting-project-main/
 
 # Sistema
 .DS_Store

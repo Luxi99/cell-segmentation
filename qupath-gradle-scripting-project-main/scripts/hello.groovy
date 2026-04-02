@@ -1,5 +1,6 @@
-import static qupath.lib.gui.scripting.QPEx.*
 import qupath.lib.objects.PathObject
+
+import static qupath.lib.gui.scripting.QPEx.*
 import qupath.lib.io.GsonTools
 
 
