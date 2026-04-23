@@ -1,5 +1,5 @@
 # Eseguibile QuPath
-QuPath/
+qupath/
 
 # Immagini (troppo grandi per Git)
 Data/input/
@@ -28,8 +28,8 @@ __pycache__/
 
 # Cartelle varie
 models/
-Progetti QuPath/
-Papers e materiale/
+progetti qupath/
+materiale/
 
 # Sistema
 .DS_Store
