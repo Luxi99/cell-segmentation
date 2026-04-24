@@ -1,8 +1,5 @@
-import groovy.transform.Field
 import groovyjarjarantlr4.v4.runtime.misc.NotNull
-import qupath.lib.gui.scripting.QPEx
 import qupath.lib.objects.PathObject
-import qupath.lib.projects.Project
 import qupath.lib.scripting.QP
 
 import javax.imageio.ImageIO
@@ -22,9 +19,6 @@ import java.awt.image.WritableRaster
  * @return La lista non nulla di annotazioni ordinata con quelle etichettate con "nucleo" per ultime
  *
  * */
-
-@Field static private final project
-
 static @NotNull List<PathObject> sortAnnotations(@NotNull List<PathObject> annotations) {
     return annotations.sort { a, b ->
         def aName = a.getPathClass()?.getName()?.toLowerCase() ?: ""
@@ -180,65 +174,31 @@ static @NotNull Map buildMaskAndTable(List<PathObject> annotations, int w, int h
     return [image: labelImage, table: labelTable]
 }
 
-static void mkdirsImpl(String path) {QP.mkdirs(path)}
-static void fireHierarchyUpdateImpl() {QP.fireHierarchyUpdate()}
+final def OUTPUT_DIR = QP.buildFilePath(QP.PROJECT_BASE_DIR, "exports")
+final def IMAGE_NAME = QP.getProjectEntry()?.getImageName() ?: "Unnamed"
+final def LABEL_IMAGE_PATH = QP.buildFilePath(OUTPUT_DIR, IMAGE_NAME + "_manual_labels_16bit.tif")
+final def TABLE_PATH = QP.buildFilePath(OUTPUT_DIR, IMAGE_NAME + "_manual_labels.tsv")
+QP.mkdirs(OUTPUT_DIR)
 
-static void processProject(
-        Project<BufferedImage> project,
-        String output_dir,
-        Closure buildMaskFn,
-        Closure saveMaskFn,
-        Closure saveTableFn
-) {
+def imageData = QP.getCurrentImageData()
+def server = imageData.getServer()
+def w = server.getWidth()
+def h = server.getHeight()
 
-    if (project == null) {
-        throw new IllegalStateException("Nessun progetto trovato. Se stai eseguendo headless, usa --project")
-    }
+// Aggiorna automaticamente la gerarchia del file in modo che annotazioni interamente contenute
+// dentro altre siano impostate come figlie delle seconde
+def hierarchy = QP.getCurrentHierarchy()
+hierarchy.resolveHierarchy()
+QP.fireHierarchyUpdate()
 
-    def entries = project.getImageList()
+def annotations = QP.getAnnotationObjects().toList()
 
-    mkdirsImpl(null)
-
-    for (entry in entries) {
-        def imageName = entry?.getImageName() ?: "Unnamed"
-        final def labelImagePath = QP.buildFilePath(output_dir, imageName + "_manual_labels_16bit.tif")
-        final def tablePath = QP.buildFilePath(output_dir, imageName + "_manual_labels.tsv")
-
-        println "\nProcessing: ${imageName}"
-
-        def imageData = entry.readImageData()
-        def server = imageData.getServer()
-        def w = server.getWidth()
-        def h = server.getHeight()
-
-        // Aggiorna automaticamente la gerarchia del file in modo che annotazioni interamente contenute
-        // dentro altre siano impostate come figlie delle seconde
-        def hierarchy = imageData.getHierarchy()
-        hierarchy.resolveHierarchy()
-        fireHierarchyUpdateImpl()
-
-        def annotations = hierarchy.getAnnotationObjects().toList()
-
-        if (annotations.isEmpty()) {
-            print "Nessuna annotazione trovata in ${imageName}, saltata"
-            imageData.close()
-            continue
-        }
-
-        def result = buildMaskFn(annotations, w, h)
-
-        saveMaskFn(result.image, "TIFF", labelImagePath)
-        saveTableFn(result.table, "LabelID\tCentroidX\tCentroidY\tClass", tablePath)
-
-        imageData.close()
-        System.gc()
-    }
+if (annotations.isEmpty()) {
+    print "Nessuna annotazione trovata!"
+    return
 }
 
-processProject(
-        QPEx.getProject(),
-        QP.buildFilePath(QP.PROJECT_BASE_DIR, "exports"),
-        {List<PathObject> anns, int w, int h -> buildMaskAndTable(anns, w, h)},
-        {BufferedImage img, String fmt, String path -> saveMask(img, fmt, path)},
-        {List table, String header, String path -> saveTable(table, header, path)}
-)
+def result = buildMaskAndTable(annotations, w, h)
+
+saveMask(result.image, "TIFF", LABEL_IMAGE_PATH)
+saveTable(result.table, "LabelID\tCentroidX\tCentroidY\tClass", TABLE_PATH)
