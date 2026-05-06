@@ -105,9 +105,9 @@ static @NotNull String createTableRecord(@NotNull PathObject ann, int label) {
 static void saveTable(@NotNull List labelTable, @NotNull String header,@NotNull String path) {
     try {
         new File(path).text = ([header] + labelTable).join("\n")
-        print "✅ Manual segmentation label table saved to: $path"
+        println "✅ Manual segmentation label table saved to: $path"
     } catch (Exception e) {
-        print "❌ Failed to save table: ${e.message}"
+        println "❌ Failed to save table: ${e.message}"
     }
 }
 
@@ -121,9 +121,9 @@ static void saveTable(@NotNull List labelTable, @NotNull String header,@NotNull 
 static void saveMask(@NotNull BufferedImage labelImage, @NotNull String formatName, @NotNull String path) {
     try {
         ImageIO.write(labelImage, formatName, new File(path))
-        print "✅ Manual segmentation label image saved (16-bit) to: $path"
+        println "✅ Manual segmentation label image saved (16-bit) to: $path"
     } catch (Exception e) {
-        print "❌ Failed to save label image: ${e.message}"
+        println "❌ Failed to save label image: ${e.message}"
     }
 }
 
@@ -146,7 +146,7 @@ static @NotNull Map buildMaskAndTable(List<PathObject> annotations, int w, int h
 
     for (ann in sorted) {
         if (label > 65535) {
-            print "Numero etichette disponibili superato. Mi fermo a 65535 annotazioni (16 bit)"
+            println "Numero etichette disponibili superato. Mi fermo a 65535 annotazioni (16 bit)"
             break
         }
 
@@ -154,7 +154,7 @@ static @NotNull Map buildMaskAndTable(List<PathObject> annotations, int w, int h
         def shape = roi?.getShape()
 
         if (shape == null) {
-            print "Salto annotazione con forma nulla"
+            println "Salto annotazione con forma nulla"
             continue
         }
 
@@ -194,7 +194,7 @@ QP.fireHierarchyUpdate()
 def annotations = QP.getAnnotationObjects().toList()
 
 if (annotations.isEmpty()) {
-    print "Nessuna annotazione trovata!"
+    println "Nessuna annotazione trovata!"
     return
 }
 
