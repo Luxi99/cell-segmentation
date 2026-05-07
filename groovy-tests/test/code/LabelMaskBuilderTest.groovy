@@ -9,14 +9,14 @@ import qupath.lib.roi.RoiTools
 import java.awt.Color
 import java.awt.Shape
 
-import static org.junit.jupiter.api.Assertions.*
-
 import qupath.lib.objects.PathObject
 import qupath.lib.objects.classes.PathClass
 
 import java.awt.Rectangle
 import java.awt.geom.Area
 import java.awt.image.BufferedImage
+
+import static org.junit.jupiter.api.Assertions.*
 
 class LabelMaskBuilderTest {
 
@@ -312,5 +312,55 @@ class LabelMaskBuilderTest {
         def raster = LabelMaskBuilder.buildMaskAndTable([cytoplasmAnn, nucleus], W, H).image.getRaster()
         assertNotEquals(1, raster.getSample(30, 30, 0),
                 "Il centro del nucleo non deve avere il label del citoplasma")
+    }
+
+    /**
+     * Verifica che lo script lanciato con parametro separateNuclei = false, restituisca una label image
+     * con i soli citoplasmi delle cellule annotate, scartando le annotazioni di tipo nucleo.
+     */
+    @Test
+    @DisplayName("Con separateNuclei=false i nuclei non devono apparire nella tabella")
+    void testSeparateNucleiFalse() {
+        def nucleus = createAnnotation("nucleo", new Rectangle(25, 25, 10, 10))
+        def cyto = createAnnotationWithChildren(
+                "cellula cancerosa",
+                new Rectangle(10, 10, 50, 50),
+                [nucleus]
+        )
+
+        def result = LabelMaskBuilder.buildMaskAndTable([cyto, nucleus], W, H, false)
+
+        // La tabella deve avere solo 1 riga — il citoplasma, non il nucleo
+        assertEquals(1, result.table.size(),
+                "Con separateNuclei=false i nuclei non devono apparire nella tabella")
+
+        // Il centro del nucleo deve avere il label del citoplasma (nessun buco)
+        assertEquals(1, result.image.getRaster().getSample(30, 30, 0),
+                "Con separateNuclei=false l'area del nucleo deve far parte del citoplasma")
+    }
+
+    /**
+     * Verifica che lo script lanciato con parametro separateNuclei = true, restituisca una label image
+     * con anche i nuclei annotati sovra impressi alle cellule genitrici
+     */
+    @Test
+    @DisplayName("Con separateNuclei=true i nuclei devono apparire nella tabella")
+    void testSeparateNucleiTrueMantieneNuclei() {
+        def nucleus = createAnnotation("nucleo", new Rectangle(25, 25, 10, 10))
+        def cyto = createAnnotationWithChildren(
+                "cellula cancerosa",
+                new Rectangle(10, 10, 50, 50),
+                [nucleus]
+        )
+
+        def result = LabelMaskBuilder.buildMaskAndTable([cyto, nucleus], W, H, true)
+
+        // La tabella deve avere 2 righe — citoplasma e nucleo
+        assertEquals(2, result.table.size(),
+                "Con separateNuclei=true i nuclei devono apparire nella tabella")
+
+        // Il centro del nucleo non deve avere il label del citoplasma (buco presente)
+        assertNotEquals(1, result.image.getRaster().getSample(30, 30, 0),
+                "Con separateNuclei=true ci deve essere il buco del nucleo")
     }
 }

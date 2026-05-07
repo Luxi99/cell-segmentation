@@ -32,6 +32,10 @@ progetti qupath/
 materiale/
 qupath-gradle-scripting-project-main/
 
+# Byproducts Gradle
+groovy-tests/build/
+groovy-tests/.gradle/
+
 # Sistema
 .DS_Store
 *.swp
