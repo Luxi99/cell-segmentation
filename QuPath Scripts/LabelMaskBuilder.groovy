@@ -204,8 +204,8 @@ println separateNuclei ? " separando i nuclei dal citoplasma" : " ignorando i nu
 
 final def OUTPUT_DIR = QP.buildFilePath(QP.PROJECT_BASE_DIR, "exports")
 final def IMAGE_NAME = QP.getProjectEntry()?.getImageName() ?: "Unnamed"
-final def LABEL_IMAGE_PATH = QP.buildFilePath(OUTPUT_DIR, IMAGE_NAME + "_manual_labels_16bit.tif")
-final def TABLE_PATH = QP.buildFilePath(OUTPUT_DIR, IMAGE_NAME + "_manual_labels.tsv")
+final def LABEL_IMAGE_PATH = QP.buildFilePath(OUTPUT_DIR, IMAGE_NAME + "_mask.tif")
+final def TABLE_PATH = QP.buildFilePath(OUTPUT_DIR, IMAGE_NAME + "_table.tsv")
 QP.mkdirs(OUTPUT_DIR)
 
 def imageData = QP.getCurrentImageData()
