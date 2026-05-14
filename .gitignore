@@ -39,3 +39,6 @@ groovy-tests/.gradle/
 # Sistema
 .DS_Store
 *.swp
+
+#Idea
+.idea/
